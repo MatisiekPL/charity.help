@@ -21,7 +21,14 @@ class _HomeFragmentState extends State<HomeFragment> {
         builder: (context, AsyncSnapshot<Position> snap) {
           if (!snap.hasData)
             return Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16.0),
+                  Text('Upewnij się, że GPS jest włączony')
+                ],
+              ),
             );
           Store.position = snap.data;
           return StreamBuilder<QuerySnapshot>(
