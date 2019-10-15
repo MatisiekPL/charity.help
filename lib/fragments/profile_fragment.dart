@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../store.dart';
+
+// TODO add new organisation button
+
 class ProfileFragment extends StatefulWidget {
   @override
   _ProfileFragmentState createState() => _ProfileFragmentState();
@@ -13,29 +17,50 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         shrinkWrap: true,
-        children: <Widget>[_buildOrganizationsWidget()],
+        children: <Widget>[_buildorganisationsWidget()],
       ),
     );
   }
 
-  _buildOrganizationsWidget() {
+  _buildorganisationsWidget() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            top: 8.0,
-          ),
-          child: Text(
-            'Organizacje',
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-          ),
+        Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                top: 8.0,
+              ),
+              child: Text(
+                'Organizacje',
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                top: 8.0,
+              ),
+              child: FlatButton(
+                child: Text('Dodaj nową organizację'),
+                onPressed: () {
+                  Firestore.instance.collection('organisations').add({
+                    'members': [Store.user.uid],
+                    'contact': 'do edycji',
+                    'description': 'do edycji',
+                    'name': 'do edycji',
+                  });
+                },
+              ),
+            )
+          ],
         ),
         StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('organizations').snapshots(),
+            stream: Firestore.instance.collection('organisations').snapshots(),
             builder: (context, query) {
               if (query.hasError) return new Text('Error: ${query.error}');
               switch (query.connectionState) {
@@ -47,7 +72,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                       physics: ClampingScrollPhysics(),
                       itemCount: query.data.documents.length,
                       itemBuilder: (context, index) {
-                        var organization = query.data.documents[index];
+                        var organisation = query.data.documents[index];
                         return Card(
                             child: Padding(
                           padding: const EdgeInsets.only(
@@ -58,19 +83,19 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  organization['name'],
+                                  organisation['name'],
                                   style: TextStyle(
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Divider(),
                                 Text(
-                                  '${organization['description']}',
+                                  '${organisation['description']}',
                                   style: TextStyle(fontSize: 16.0),
                                 ),
                                 Divider(),
                                 Text(
-                                  'Kontakt: ${organization['contact']}',
+                                  'Kontakt: ${organisation['contact']}',
                                   style: TextStyle(fontSize: 16.0),
                                 ),
                                 Padding(
@@ -92,11 +117,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                           var contactController =
                                               TextEditingController();
                                           nameController.text =
-                                              organization['name'];
+                                              organisation['name'];
                                           descriptionController.text =
-                                              organization['description'];
+                                              organisation['description'];
                                           contactController.text =
-                                              organization['contact'];
+                                              organisation['contact'];
                                           showDialog(
                                               context: context,
                                               builder: (context) {
@@ -140,12 +165,24 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                                     FlatButton(
                                                       child: Text('Zapisz'),
                                                       onPressed: () {
-                                                        Firestore.instance.collection('organizations').document(organization.documentID).updateData({
-                                                          'name': nameController.text,
-                                                          'contact': contactController.text,
-                                                          'description': descriptionController.text
+                                                        Firestore.instance
+                                                            .collection(
+                                                                'organisations')
+                                                            .document(
+                                                                organisation
+                                                                    .documentID)
+                                                            .updateData({
+                                                          'name': nameController
+                                                              .text,
+                                                          'contact':
+                                                              contactController
+                                                                  .text,
+                                                          'description':
+                                                              descriptionController
+                                                                  .text
                                                         });
-                                                        Navigator.of(context).pop();
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
                                                     ),
                                                     FlatButton(
@@ -186,9 +223,9 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                                       onPressed: () {
                                                         Firestore.instance
                                                             .collection(
-                                                                'organizations')
+                                                                'organisations')
                                                             .document(
-                                                                organization
+                                                                organisation
                                                                     .documentID)
                                                             .delete();
                                                         Navigator.of(context)

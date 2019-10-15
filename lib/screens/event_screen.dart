@@ -9,6 +9,8 @@ import 'package:latlong/latlong.dart';
 
 import '../store.dart';
 
+// TODO add chart that shows progress on event
+
 final GlobalKey<AnimatedCircularChartState> _chartKey =
     new GlobalKey<AnimatedCircularChartState>();
 
@@ -260,7 +262,7 @@ class _EventScreenState extends State<EventScreen> {
 
   _isEventAuthor(DocumentSnapshot eventDoc) async {
     var docs = await Firestore.instance
-        .collection('organizations')
+        .collection('organisations')
         .document((await (eventDoc.data['author'] as DocumentReference)
                 .snapshots()
                 .first)
