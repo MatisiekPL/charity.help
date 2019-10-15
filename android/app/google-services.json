@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "186185442124",
+    "firebase_url": "https://charity-help.firebaseio.com",
+    "project_id": "charity-help",
+    "storage_bucket": "charity-help.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186185442124:android:bf04e59f412ec0cc3065e9",
+        "android_client_info": {
+          "package_name": "pl.mateuszwozniak.charity_help"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186185442124-3mgr3m8reklfsqpp6g2krck3723bbqlg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.mateuszwozniak.charity_help",
+            "certificate_hash": "d4f8ef19beffd2bf5b1637f2f5534a561c62f050"
+          }
+        },
+        {
+          "client_id": "186185442124-vgklc22jjagefqarag5dd3hvsgvnq0cq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmPn54zqgVI05IA1007x3SN0l4NJTPCCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186185442124-vgklc22jjagefqarag5dd3hvsgvnq0cq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

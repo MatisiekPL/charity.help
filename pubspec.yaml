@@ -1,0 +1,33 @@
+name: charity_help
+description: An app, that connects charity organizations and common people, that want help to get rid of poverty
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.2
+  intro_slider: ^2.2.8
+  firebase_auth: ^0.14.0+5
+  google_sign_in: ^4.0.7
+  flutter_map: any
+  cloud_firestore: ^0.12.9+4
+  rxdart: ^0.22.3
+  geolocator: ^5.1.4
+  latlong: ^0.6.1
+  flutter_circular_chart: ^0.1.0
+  geocoder: ^0.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/marker.png
