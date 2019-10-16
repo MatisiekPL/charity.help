@@ -1,16 +1,9 @@
-# charity_help
+# Charity.Help
 
-An app, that connects charity organizations and common people, that want help to get rid of poverty
+Aplikacja, która łączy organizatorów zbiórek charytatywnych oraz zwykłych ludzi, którzy chcą pomóc przy zwalczaniu biedy w krajach trzeciego świata. 
 
-## Getting Started
+Charity.Help to miejsce, gdzie organizator może dodać zbiórkę charytatywną na dowolny cel, oznaczyć jej miejsce, a także śledzić postęp w zbieraniu najpotrzebniejszych rzeczy. 
 
-This project is a starting point for a Flutter application.
+Aplikacja może mieć zastosowanie nie tylko w przypadku zwalczania ubóstwa w krajach trzeciego świata, ale także w przypadku klęsk żywiołowych, w których trzeba szybko zorganizować pomoc dla wielu rodzin, osób starszych, potrzebujących...
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Aplikacja na system Android została stworzona w technologii Flutter, a zapleczem serwerowym jest Firebase (Firebase Auth, Firestore). 
