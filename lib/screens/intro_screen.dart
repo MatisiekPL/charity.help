@@ -6,6 +6,7 @@ import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
 
 import '../main.dart';
+import '../store.dart';
 
 class IntroScreen extends StatefulWidget {
   @override
@@ -78,6 +79,7 @@ class _IntroScreenState extends State<IntroScreen> {
   Future<void> _login() async {
     try {
       var user = await _handleSignIn();
+      Store.user = user;
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } catch (err) {}

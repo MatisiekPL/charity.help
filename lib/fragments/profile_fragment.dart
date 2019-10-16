@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../store.dart';
 
 // TODO add new organisation button
+// TODO add invitations feature
 
 class ProfileFragment extends StatefulWidget {
   @override
@@ -17,7 +21,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         shrinkWrap: true,
-        children: <Widget>[_buildorganisationsWidget()],
+        children: <Widget>[
+          _buildorganisationsWidget(),
+          SizedBox(height: 16),
+          ProfileCodeWidget()
+        ],
       ),
     );
   }
@@ -49,7 +57,9 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                 child: Text('Dodaj nową organizację'),
                 onPressed: () {
                   Firestore.instance.collection('organisations').add({
-                    'members': [Store.user.uid],
+                    'members': [
+                      {'id': Store.user.uid, 'name': Store.user.displayName}
+                    ],
                     'contact': 'do edycji',
                     'description': 'do edycji',
                     'name': 'do edycji',
@@ -244,6 +254,168 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                               });
                                         },
                                       ),
+                                      SizedBox(
+                                        width: 8.0,
+                                      ),
+                                      InkWell(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Container(
+                                              child: Text("Członkowie")),
+                                        ),
+                                        onTap: () {
+                                          showDialog(
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text('Członkowie'),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      StreamBuilder<
+                                                              QuerySnapshot>(
+                                                          stream: Firestore
+                                                              .instance
+                                                              .collection(
+                                                                  'organisations')
+                                                              .document(
+                                                                  organisation
+                                                                      .documentID)
+                                                              .collection(
+                                                                  'members')
+                                                              .snapshots(),
+                                                          builder:
+                                                              (context, snap) {
+                                                            if (!snap.hasData ||
+                                                                snap.data ==
+                                                                    null)
+                                                              return CircularProgressIndicator();
+                                                            return ListView
+                                                                .builder(
+                                                              shrinkWrap: true,
+                                                              itemCount: snap
+                                                                  .data
+                                                                  .documents
+                                                                  .length,
+                                                              itemBuilder:
+                                                                  (BuildContext
+                                                                          context,
+                                                                      int index) {
+                                                                var member = snap
+                                                                        .data
+                                                                        .documents[
+                                                                    index];
+                                                                return Row(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Text(member.data[
+                                                                            'name'] ??
+                                                                        'Ładowanie'),
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        () async {
+                                                                          var result = await Firestore
+                                                                              .instance
+                                                                              .collection('organisations')
+                                                                              .document(organisation.documentID)
+                                                                              .collection('members')
+                                                                              .where('id', isEqualTo: member.data['id'])
+                                                                              .getDocuments();
+                                                                          try {
+                                                                            await Firestore.instance.collection('organisations').document(organisation.documentID).collection('members').document(result.documents[0].documentID).delete();
+                                                                          } catch (err) {
+                                                                            print(err);
+                                                                          }
+                                                                        }();
+                                                                      },
+                                                                      child: Icon(
+                                                                          Icons
+                                                                              .delete),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            8.0),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            );
+                                                          }),
+                                                      TextField(
+                                                        textInputAction:
+                                                            TextInputAction.go,
+                                                        maxLines: 1,
+                                                        decoration: InputDecoration(
+                                                            labelText:
+                                                                'Kod użytkownika'),
+                                                        onSubmitted: (code) {
+                                                          try {
+                                                            var invitation = utf8
+                                                                .decode(base64
+                                                                    .decode(
+                                                                        code));
+                                                            var id = invitation
+                                                                .split('.')[0];
+                                                            var name =
+                                                                invitation
+                                                                    .split(
+                                                                        '.')[1];
+                                                            Firestore.instance
+                                                                .collection(
+                                                                    'organisations')
+                                                                .document(
+                                                                    organisation
+                                                                        .documentID)
+                                                                .collection(
+                                                                    'members')
+                                                                .add({
+                                                              'id': id,
+                                                              'name': name
+                                                            });
+                                                          } catch (err) {
+                                                            showDialog(
+                                                                builder:
+                                                                    (context) {
+                                                                  return AlertDialog(
+                                                                    title: Text(
+                                                                        'Kod nieprawidłowy'),
+                                                                    content: Text(
+                                                                        'Podany kod jest nieprawidłowy'),
+                                                                    actions: <
+                                                                        Widget>[
+                                                                      FlatButton(
+                                                                        child: Text(
+                                                                            'OK'),
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                      )
+                                                                    ],
+                                                                  );
+                                                                },
+                                                                context:
+                                                                    context);
+                                                          }
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                      child: Text('OK'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    )
+                                                  ],
+                                                );
+                                              },
+                                              context: context);
+                                        },
+                                      ),
                                     ],
                                   ),
                                 )
@@ -252,6 +424,49 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                       });
               }
             }),
+      ],
+    );
+  }
+}
+
+class ProfileCodeWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String code = base64
+        .encode(utf8.encode(Store.user.uid + '.' + Store.user.displayName));
+    return Column(
+      children: <Widget>[
+        Text(
+          'Kod użytkownika: ',
+          style: TextStyle(fontSize: 20.0),
+        ),
+        SizedBox(height: 8.0),
+        Row(
+          children: <Widget>[
+            Container(
+              child: Text(
+                code,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.0),
+              ),
+              width: MediaQuery.of(context).size.width * 0.8,
+            ),
+            SizedBox(width: 4),
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              child: Icon(Icons.content_copy),
+              onTap: () {
+                Clipboard.setData(new ClipboardData(text: code));
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Kod został skopiowany'),
+                  ),
+                );
+              },
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+        )
       ],
     );
   }
