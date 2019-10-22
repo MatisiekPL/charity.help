@@ -10,6 +10,7 @@ import 'package:latlong/latlong.dart';
 import '../store.dart';
 
 // TODO add chart that shows progress on event
+// TODO secure app
 
 final GlobalKey<AnimatedCircularChartState> _chartKey =
     new GlobalKey<AnimatedCircularChartState>();

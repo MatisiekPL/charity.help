@@ -7,6 +7,8 @@ import 'package:latlong/latlong.dart';
 
 import '../store.dart';
 
+// TODO add event creation button
+
 class HomeFragment extends StatefulWidget {
   @override
   _HomeFragmentState createState() => _HomeFragmentState();

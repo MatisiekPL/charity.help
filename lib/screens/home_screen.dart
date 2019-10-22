@@ -10,6 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Store.fragment.add(ProfileFragment());
         break;
     }
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override
@@ -40,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.home), title: Text('Zbiórki')),

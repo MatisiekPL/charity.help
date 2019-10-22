@@ -6,9 +6,6 @@ import 'package:flutter/services.dart';
 
 import '../store.dart';
 
-// TODO add new organisation button
-// TODO add invitations feature
-
 class ProfileFragment extends StatefulWidget {
   @override
   _ProfileFragmentState createState() => _ProfileFragmentState();
