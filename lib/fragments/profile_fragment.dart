@@ -80,349 +80,387 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                       itemCount: query.data.documents.length,
                       itemBuilder: (context, index) {
                         var organisation = query.data.documents[index];
-                        return Card(
-                            child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 12.0,
-                            top: 8.0,
-                          ),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  organisation['name'],
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Divider(),
-                                Text(
-                                  '${organisation['description']}',
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                                Divider(),
-                                Text(
-                                  'Kontakt: ${organisation['contact']}',
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 8.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child:
-                                              Container(child: Text("Edytuj")),
-                                        ),
-                                        onTap: () {
-                                          var nameController =
-                                              TextEditingController();
-                                          var descriptionController =
-                                              TextEditingController();
-                                          var contactController =
-                                              TextEditingController();
-                                          nameController.text =
-                                              organisation['name'];
-                                          descriptionController.text =
-                                              organisation['description'];
-                                          contactController.text =
-                                              organisation['contact'];
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                      'Edycja organizacji'),
-                                                  content: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      TextField(
-                                                          controller:
-                                                              nameController,
-                                                          decoration:
-                                                              InputDecoration(
-                                                                  labelText:
-                                                                      'Nazwa')),
-                                                      SizedBox(
-                                                        height: 8.0,
-                                                      ),
-                                                      TextField(
-                                                          controller:
-                                                              descriptionController,
-                                                          decoration:
-                                                              InputDecoration(
-                                                                  labelText:
-                                                                      'Opis')),
-                                                      SizedBox(
-                                                        height: 8.0,
-                                                      ),
-                                                      TextField(
-                                                          controller:
-                                                              contactController,
-                                                          decoration:
-                                                              InputDecoration(
-                                                                  labelText:
-                                                                      'Kontakt')),
-                                                    ],
-                                                  ),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text('Zapisz'),
-                                                      onPressed: () {
-                                                        Firestore.instance
-                                                            .collection(
-                                                                'organisations')
-                                                            .document(
-                                                                organisation
-                                                                    .documentID)
-                                                            .updateData({
-                                                          'name': nameController
-                                                              .text,
-                                                          'contact':
-                                                              contactController
-                                                                  .text,
-                                                          'description':
-                                                              descriptionController
-                                                                  .text
-                                                        });
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                    FlatButton(
-                                                      child: Text('Anuluj'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    )
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 8.0,
-                                      ),
-                                      InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Container(child: Text("Usuń")),
-                                        ),
-                                        onTap: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: Text('Potwierdzenie'),
-                                                  content: Text(
-                                                      'Czy na pewno chcesz usunąć tą ogranizację?'),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text(
-                                                        'Potwierdź',
-                                                        style: TextStyle(
-                                                            color: Colors.red),
-                                                      ),
-                                                      onPressed: () {
-                                                        Firestore.instance
-                                                            .collection(
-                                                                'organisations')
-                                                            .document(
-                                                                organisation
-                                                                    .documentID)
-                                                            .delete();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                    FlatButton(
-                                                      child: Text('Anuluj'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    )
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 8.0,
-                                      ),
-                                      InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Container(
-                                              child: Text("Członkowie")),
-                                        ),
-                                        onTap: () {
-                                          showDialog(
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: Text('Członkowie'),
-                                                  content: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      StreamBuilder<
-                                                              QuerySnapshot>(
-                                                          stream: Firestore
-                                                              .instance
-                                                              .collection(
-                                                                  'organisations')
-                                                              .document(
-                                                                  organisation
-                                                                      .documentID)
-                                                              .collection(
-                                                                  'members')
-                                                              .snapshots(),
-                                                          builder:
-                                                              (context, snap) {
-                                                            if (!snap.hasData ||
-                                                                snap.data ==
-                                                                    null)
-                                                              return CircularProgressIndicator();
-                                                            return ListView
-                                                                .builder(
-                                                              shrinkWrap: true,
-                                                              itemCount: snap
-                                                                  .data
-                                                                  .documents
-                                                                  .length,
-                                                              itemBuilder:
-                                                                  (BuildContext
-                                                                          context,
-                                                                      int index) {
-                                                                var member = snap
-                                                                        .data
-                                                                        .documents[
-                                                                    index];
-                                                                return Row(
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Text(member.data[
-                                                                            'name'] ??
-                                                                        'Ładowanie'),
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        () async {
-                                                                          var result = await Firestore
-                                                                              .instance
-                                                                              .collection('organisations')
-                                                                              .document(organisation.documentID)
-                                                                              .collection('members')
-                                                                              .where('id', isEqualTo: member.data['id'])
-                                                                              .getDocuments();
-                                                                          try {
-                                                                            await Firestore.instance.collection('organisations').document(organisation.documentID).collection('members').document(result.documents[0].documentID).delete();
-                                                                          } catch (err) {
-                                                                            print(err);
-                                                                          }
-                                                                        }();
-                                                                      },
-                                                                      child: Icon(
-                                                                          Icons
-                                                                              .delete),
-                                                                    ),
-                                                                    SizedBox(
-                                                                        height:
-                                                                            8.0),
-                                                                  ],
+                        return FutureBuilder(
+                          future: _isOrganisationAuthor(organisation),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snap) {
+                            if (!snap.hasData || !snap.data) return Container();
+                            return Card(
+                                child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12.0,
+                                top: 8.0,
+                              ),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      organisation['name'],
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Divider(),
+                                    Text(
+                                      '${organisation['description']}',
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                    Divider(),
+                                    Text(
+                                      'Kontakt: ${organisation['contact']}',
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, bottom: 8.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          InkWell(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Container(
+                                                  child: Text("Edytuj")),
+                                            ),
+                                            onTap: () {
+                                              () async {
+                                                if (!await _isOrganisationAuthor(
+                                                    organisation)) return;
+                                                var nameController =
+                                                    TextEditingController();
+                                                var descriptionController =
+                                                    TextEditingController();
+                                                var contactController =
+                                                    TextEditingController();
+                                                nameController.text =
+                                                    organisation['name'];
+                                                descriptionController.text =
+                                                    organisation['description'];
+                                                contactController.text =
+                                                    organisation['contact'];
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: Text(
+                                                            'Edycja organizacji'),
+                                                        content: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: <Widget>[
+                                                            TextField(
+                                                                controller:
+                                                                    nameController,
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                        labelText:
+                                                                            'Nazwa')),
+                                                            SizedBox(
+                                                              height: 8.0,
+                                                            ),
+                                                            TextField(
+                                                                controller:
+                                                                    descriptionController,
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                        labelText:
+                                                                            'Opis')),
+                                                            SizedBox(
+                                                              height: 8.0,
+                                                            ),
+                                                            TextField(
+                                                                controller:
+                                                                    contactController,
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                        labelText:
+                                                                            'Kontakt')),
+                                                          ],
+                                                        ),
+                                                        actions: <Widget>[
+                                                          FlatButton(
+                                                            child:
+                                                                Text('Zapisz'),
+                                                            onPressed: () {
+                                                              Firestore.instance
+                                                                  .collection(
+                                                                      'organisations')
+                                                                  .document(
+                                                                      organisation
+                                                                          .documentID)
+                                                                  .updateData({
+                                                                'name':
+                                                                    nameController
+                                                                        .text,
+                                                                'contact':
+                                                                    contactController
+                                                                        .text,
+                                                                'description':
+                                                                    descriptionController
+                                                                        .text
+                                                              });
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                          FlatButton(
+                                                            child:
+                                                                Text('Anuluj'),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          )
+                                                        ],
+                                                      );
+                                                    });
+                                              }();
+                                            },
+                                          ),
+                                          SizedBox(
+                                            width: 8.0,
+                                          ),
+                                          InkWell(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Container(
+                                                  child: Text("Usuń")),
+                                            ),
+                                            onTap: () {
+                                              () async {
+                                                if (!await _isOrganisationAuthor(
+                                                    organisation)) return;
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: Text(
+                                                            'Potwierdzenie'),
+                                                        content: Text(
+                                                            'Czy na pewno chcesz usunąć tą ogranizację?'),
+                                                        actions: <Widget>[
+                                                          FlatButton(
+                                                            child: Text(
+                                                              'Potwierdź',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red),
+                                                            ),
+                                                            onPressed: () {
+                                                              Firestore.instance
+                                                                  .collection(
+                                                                      'organisations')
+                                                                  .document(
+                                                                      organisation
+                                                                          .documentID)
+                                                                  .delete();
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                          FlatButton(
+                                                            child:
+                                                                Text('Anuluj'),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          )
+                                                        ],
+                                                      );
+                                                    });
+                                              }();
+                                            },
+                                          ),
+                                          SizedBox(
+                                            width: 8.0,
+                                          ),
+                                          InkWell(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Container(
+                                                  child: Text("Członkowie")),
+                                            ),
+                                            onTap: () {
+                                              showDialog(
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      title: Text('Członkowie'),
+                                                      content: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          StreamBuilder<
+                                                                  QuerySnapshot>(
+                                                              stream: Firestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'organisations')
+                                                                  .document(
+                                                                      organisation
+                                                                          .documentID)
+                                                                  .collection(
+                                                                      'members')
+                                                                  .snapshots(),
+                                                              builder: (context,
+                                                                  snap) {
+                                                                if (!snap
+                                                                        .hasData ||
+                                                                    snap.data ==
+                                                                        null)
+                                                                  return CircularProgressIndicator();
+                                                                return ListView
+                                                                    .builder(
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemCount: snap
+                                                                      .data
+                                                                      .documents
+                                                                      .length,
+                                                                  itemBuilder:
+                                                                      (BuildContext
+                                                                              context,
+                                                                          int index) {
+                                                                    var member = snap
+                                                                            .data
+                                                                            .documents[
+                                                                        index];
+                                                                    return Row(
+                                                                      children: <
+                                                                          Widget>[
+                                                                        Text(member.data['name'] ??
+                                                                            'Ładowanie'),
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            () async {
+                                                                              var result = await Firestore.instance.collection('organisations').document(organisation.documentID).collection('members').where('id', isEqualTo: member.data['id']).getDocuments();
+                                                                              try {
+                                                                                await Firestore.instance.collection('organisations').document(organisation.documentID).collection('members').document(result.documents[0].documentID).delete();
+                                                                              } catch (err) {
+                                                                                print(err);
+                                                                              }
+                                                                            }();
+                                                                          },
+                                                                          child:
+                                                                              Icon(Icons.delete),
+                                                                        ),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                8.0),
+                                                                      ],
+                                                                    );
+                                                                  },
                                                                 );
-                                                              },
-                                                            );
-                                                          }),
-                                                      TextField(
-                                                        textInputAction:
-                                                            TextInputAction.go,
-                                                        maxLines: 1,
-                                                        decoration: InputDecoration(
-                                                            labelText:
-                                                                'Kod użytkownika'),
-                                                        onSubmitted: (code) {
-                                                          try {
-                                                            var invitation = utf8
-                                                                .decode(base64
-                                                                    .decode(
-                                                                        code));
-                                                            var id = invitation
-                                                                .split('.')[0];
-                                                            var name =
-                                                                invitation
+                                                              }),
+                                                          TextField(
+                                                            textInputAction:
+                                                                TextInputAction
+                                                                    .go,
+                                                            maxLines: 1,
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    labelText:
+                                                                        'Kod użytkownika'),
+                                                            onSubmitted:
+                                                                (code) {
+                                                              try {
+                                                                var invitation =
+                                                                    utf8.decode(
+                                                                        base64.decode(
+                                                                            code));
+                                                                var id = invitation
                                                                     .split(
-                                                                        '.')[1];
-                                                            Firestore.instance
-                                                                .collection(
-                                                                    'organisations')
-                                                                .document(
-                                                                    organisation
-                                                                        .documentID)
-                                                                .collection(
-                                                                    'members')
-                                                                .add({
-                                                              'id': id,
-                                                              'name': name
-                                                            });
-                                                          } catch (err) {
-                                                            showDialog(
-                                                                builder:
-                                                                    (context) {
-                                                                  return AlertDialog(
-                                                                    title: Text(
-                                                                        'Kod nieprawidłowy'),
-                                                                    content: Text(
-                                                                        'Podany kod jest nieprawidłowy'),
-                                                                    actions: <
-                                                                        Widget>[
-                                                                      FlatButton(
-                                                                        child: Text(
-                                                                            'OK'),
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                        },
-                                                                      )
-                                                                    ],
-                                                                  );
-                                                                },
-                                                                context:
-                                                                    context);
-                                                          }
-                                                        },
+                                                                        '.')[0];
+                                                                var name =
+                                                                    invitation
+                                                                        .split(
+                                                                            '.')[1];
+                                                                Firestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'organisations')
+                                                                    .document(
+                                                                        organisation
+                                                                            .documentID)
+                                                                    .collection(
+                                                                        'members')
+                                                                    .add({
+                                                                  'id': id,
+                                                                  'name': name
+                                                                });
+                                                              } catch (err) {
+                                                                showDialog(
+                                                                    builder:
+                                                                        (context) {
+                                                                      return AlertDialog(
+                                                                        title: Text(
+                                                                            'Kod nieprawidłowy'),
+                                                                        content:
+                                                                            Text('Podany kod jest nieprawidłowy'),
+                                                                        actions: <
+                                                                            Widget>[
+                                                                          FlatButton(
+                                                                            child:
+                                                                                Text('OK'),
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          )
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                    context:
+                                                                        context);
+                                                              }
+                                                            },
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text('OK'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    )
-                                                  ],
-                                                );
-                                              },
-                                              context: context);
-                                        },
+                                                      actions: <Widget>[
+                                                        FlatButton(
+                                                          child: Text('OK'),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                  context: context);
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                )
-                              ]),
-                        ));
+                                    )
+                                  ]),
+                            ));
+                          },
+                        );
                       });
               }
             }),
       ],
     );
+  }
+
+  _isOrganisationAuthor(DocumentSnapshot organisationDoc) async {
+    var docs = await Firestore.instance
+        .collection('organisations')
+        .document(organisationDoc.documentID)
+        .collection('members')
+        .where('id', isEqualTo: Store.user.uid)
+        .getDocuments();
+    return docs.documents.length > 0;
   }
 }
 

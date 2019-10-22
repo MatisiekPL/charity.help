@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,7 +133,9 @@ class _EventScreenState extends State<EventScreen> {
                                   ),
                                   context: context);
                             };
-                            edit();
+                            () async {
+                              if (await _isEventAuthor(snapshot.data)) edit();
+                            }();
                           },
                           child: Card(
                             child: Column(
@@ -401,19 +402,25 @@ class _EventScreenState extends State<EventScreen> {
                                                               setState(() {
                                                                 count++;
                                                               });
-                                                              Firestore.instance
-                                                                  .collection(
-                                                                      'events')
-                                                                  .document(eventDoc
-                                                                      .documentID)
-                                                                  .collection(
-                                                                      'things')
-                                                                  .document(snapshot
-                                                                      .data
-                                                                      .documents[
-                                                                          index]
-                                                                      .documentID)
-                                                                  .delete();
+                                                              () async {
+                                                                if (await _isEventAuthor(
+                                                                    eventDoc))
+                                                                  Firestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'events')
+                                                                      .document(
+                                                                          eventDoc
+                                                                              .documentID)
+                                                                      .collection(
+                                                                          'things')
+                                                                      .document(snapshot
+                                                                          .data
+                                                                          .documents[
+                                                                              index]
+                                                                          .documentID)
+                                                                      .delete();
+                                                              }();
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
@@ -433,17 +440,21 @@ class _EventScreenState extends State<EventScreen> {
                                                   setState(() {
                                                     count++;
                                                   });
-                                                  Firestore.instance
-                                                      .collection('events')
-                                                      .document(
-                                                          eventDoc.documentID)
-                                                      .collection('things')
-                                                      .document(snapshot
-                                                          .data
-                                                          .documents[index]
-                                                          .documentID)
-                                                      .updateData(
-                                                          {'count': count});
+                                                  () async {
+                                                    if (await _isEventAuthor(
+                                                        eventDoc))
+                                                      Firestore.instance
+                                                          .collection('events')
+                                                          .document(eventDoc
+                                                              .documentID)
+                                                          .collection('things')
+                                                          .document(snapshot
+                                                              .data
+                                                              .documents[index]
+                                                              .documentID)
+                                                          .updateData(
+                                                              {'count': count});
+                                                  }();
                                                 }),
                                             FlatButton(
                                                 child: Text('Odejmij'),
@@ -452,36 +463,46 @@ class _EventScreenState extends State<EventScreen> {
                                                   setState(() {
                                                     count--;
                                                   });
-                                                  Firestore.instance
-                                                      .collection('events')
-                                                      .document(
-                                                          eventDoc.documentID)
-                                                      .collection('things')
-                                                      .document(snapshot
-                                                          .data
-                                                          .documents[index]
-                                                          .documentID)
-                                                      .updateData(
-                                                          {'count': count});
+                                                  () async {
+                                                    if (await _isEventAuthor(
+                                                        eventDoc))
+                                                      Firestore.instance
+                                                          .collection('events')
+                                                          .document(eventDoc
+                                                              .documentID)
+                                                          .collection('things')
+                                                          .document(snapshot
+                                                              .data
+                                                              .documents[index]
+                                                              .documentID)
+                                                          .updateData(
+                                                              {'count': count});
+                                                  }();
                                                 }),
                                             FlatButton(
                                                 child: Text('OK'),
                                                 onPressed: () {
-                                                  Firestore.instance
-                                                      .collection('events')
-                                                      .document(
-                                                          eventDoc.documentID)
-                                                      .collection('things')
-                                                      .document(snapshot
-                                                          .data
-                                                          .documents[index]
-                                                          .documentID)
-                                                      .updateData({
-                                                    'name': nameController.text,
-                                                    'count': count,
-                                                    'target': int.parse(
-                                                        targetController.text)
-                                                  });
+                                                  () async {
+                                                    if (await _isEventAuthor(
+                                                        eventDoc))
+                                                      Firestore.instance
+                                                          .collection('events')
+                                                          .document(eventDoc
+                                                              .documentID)
+                                                          .collection('things')
+                                                          .document(snapshot
+                                                              .data
+                                                              .documents[index]
+                                                              .documentID)
+                                                          .updateData({
+                                                        'name':
+                                                            nameController.text,
+                                                        'count': count,
+                                                        'target': int.parse(
+                                                            targetController
+                                                                .text)
+                                                      });
+                                                  }();
                                                   Navigator.of(context).pop();
                                                 }),
                                           ],
@@ -546,15 +567,18 @@ class _EventScreenState extends State<EventScreen> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Firestore.instance
-                                .collection('events')
-                                .document(eventDoc.documentID)
-                                .collection('things')
-                                .add({
-                              'count': 0,
-                              'target': 1,
-                              'name': 'Nowy przedmiot'
-                            });
+                            () async {
+                              if (await _isEventAuthor(eventDoc))
+                                Firestore.instance
+                                    .collection('events')
+                                    .document(eventDoc.documentID)
+                                    .collection('things')
+                                    .add({
+                                  'count': 0,
+                                  'target': 1,
+                                  'name': 'Nowy przedmiot'
+                                });
+                            }();
                           },
                           child: Container(
                             child: Row(
