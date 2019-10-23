@@ -53,14 +53,24 @@ class _ProfileFragmentState extends State<ProfileFragment> {
               child: FlatButton(
                 child: Text('Dodaj nową organizację'),
                 onPressed: () {
-                  Firestore.instance.collection('organisations').add({
-                    'members': [
-                      {'id': Store.user.uid, 'name': Store.user.displayName}
-                    ],
-                    'contact': 'do edycji',
-                    'description': 'do edycji',
-                    'name': 'do edycji',
-                  });
+                  () async {
+                    var doc = await Firestore.instance
+                        .collection('organisations')
+                        .add({
+                      'contact': 'do edycji',
+                      'description': 'do edycji',
+                      'name': 'do edycji',
+                    });
+                    await Firestore.instance
+                        .collection('organisations')
+                        .document(doc.documentID)
+                        .collection('members')
+                        .add({
+                      'id': Store.user.uid,
+                      'name': Store.user.displayName
+                    });
+                    setState(() {});
+                  }();
                 },
               ),
             )
