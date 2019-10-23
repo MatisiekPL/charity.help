@@ -72,6 +72,21 @@ class _EventScreenState extends State<EventScreen> {
                                     ),
                                     actions: <Widget>[
                                       FlatButton(
+                                        child: Text(
+                                          'Usuń',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        onPressed: () {
+                                          Firestore.instance
+                                              .collection('events')
+                                              .document(
+                                                  snapshot.data.documentID)
+                                              .delete();
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      FlatButton(
                                         child: Text('Anuluj'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
