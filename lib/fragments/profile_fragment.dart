@@ -250,16 +250,37 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                                                       .red),
                                                             ),
                                                             onPressed: () {
-                                                              Firestore.instance
-                                                                  .collection(
-                                                                      'organisations')
-                                                                  .document(
-                                                                      organisation
-                                                                          .documentID)
-                                                                  .delete();
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
+                                                              () async {
+                                                                dynamic docs = await Firestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'events')
+                                                                    .where(
+                                                                        'author',
+                                                                        isEqualTo: Firestore
+                                                                            .instance
+                                                                            .collection('organisations')
+                                                                            .document(organisation.documentID))
+                                                                    .getDocuments();
+                                                                docs.documents.forEach((DocumentSnapshot el) => Firestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'events')
+                                                                    .document(el
+                                                                        .documentID)
+                                                                    .delete());
+                                                                await Firestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'organisations')
+                                                                    .document(
+                                                                        organisation
+                                                                            .documentID)
+                                                                    .delete();
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              }();
                                                             },
                                                           ),
                                                           FlatButton(
